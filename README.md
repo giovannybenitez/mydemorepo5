@@ -1,4 +1,4 @@
-# mydemorepo4
+# Instructions
 
 curl -X GET localhost:8080/quiz -H "Accept: application/json" -H "Content-Type: application/json"
 
