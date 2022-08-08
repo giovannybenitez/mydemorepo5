@@ -6,10 +6,17 @@ public class LoanResponse {
 	
 	private double installment;
 	
+	private String message;
+	
 	public LoanResponse(Long loanId, double installment) {
 		super();
 		this.loanId = loanId;
 		this.installment = installment;
+	}
+
+	public LoanResponse(String message) {
+		super();
+		this.message = message;
 	}
 
 	public Long getLoanId() {
@@ -28,5 +35,12 @@ public class LoanResponse {
 		this.installment = installment;
 	}
 
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
 }

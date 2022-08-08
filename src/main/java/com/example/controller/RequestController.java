@@ -7,10 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.model.Debt;
 import com.example.model.Loan;
 import com.example.model.LoanRequest;
 import com.example.model.LoanResponse;
@@ -44,7 +46,6 @@ public class RequestController {
 	@GetMapping(value = "/loans")
 	public List<Loan> loans(@RequestBody String body) {
 		
-		
 		JSONObject jsonObject = new JSONObject(body);
 		
 		String from = (String) jsonObject.get("from");
@@ -71,6 +72,18 @@ public class RequestController {
 		return pr;
 	}
 	
+	
+	@GetMapping(value = "/debt-by-loan/{loanId}")
+	public Debt debtByLoan(@RequestBody String body, @PathVariable("loanId") Long loanId) {
+		
+		JSONObject jsonObject = new JSONObject(body);
+		String date = (String) jsonObject.get("date");
+		
+		Debt debt = iBusinessService.getDebtByLoan(loanId);
+		log.info("Deuda por pago: {} ", debt.getBalance());
+		
+		return debt;
+	}
 	
 	
 }

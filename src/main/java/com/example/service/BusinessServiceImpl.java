@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.model.Customer;
+import com.example.model.Debt;
 import com.example.model.Loan;
 import com.example.model.LoanRequest;
 import com.example.model.LoanResponse;
@@ -25,6 +26,10 @@ import com.example.repository.IPaymentRepository;
 import com.example.repository.ITargetRepository;
 import com.example.util.BusinessLogic;
 
+/**
+ * @author gbenitez
+ *
+ */
 @Service
 public class BusinessServiceImpl implements IBusinessService{
 	
@@ -46,10 +51,7 @@ public class BusinessServiceImpl implements IBusinessService{
 	private BusinessLogic businessLogic;
 	
 	
-	/**
-	 * Este Método crea una solicitud de prestamo en base de datos, dado unos parametros iniciales
-	 * 
-	 */
+	
 	@Transactional
 	@Override
 	public LoanResponse createLoanRequest(LoanRequest loanRequest) {
@@ -63,6 +65,10 @@ public class BusinessServiceImpl implements IBusinessService{
 			customer = iCustomerRepository.findById(loanRequest.getUserId()).orElseThrow(() -> new Exception());
 			
 			target = iTargetRepository.findByType(customer.getTarget());
+			
+			if(loanRequest.getAmount() > target.getMaxAmount()) {
+				return new LoanResponse("Monto solicitado no permitido para usuario target: " + target.getType());
+			}
 			
 			Loan loan = new Loan(loanRequest.getAmount(), loanRequest.getTerm(), target.getRate(), 
 					customer.getCustomerId(), customer.getTarget(), new Date(), "OPEN");
@@ -82,6 +88,54 @@ public class BusinessServiceImpl implements IBusinessService{
 		}
 		
 		return loanResponse;
+	}
+	
+	
+	@Override
+	public void changeUserTarget(Long userId) {
+		
+		double amountTotal = 0;
+		
+		try {
+			Customer customer = iCustomerRepository.findById(userId).orElseThrow(() -> new Exception());
+			log.info("Target actual {} ", customer.getTarget());
+			
+			List<Loan> loans = iLoanRepository.findByUser(customer.getCustomerId());
+			
+			for (Loan loan : loans) {
+				amountTotal += loan.getAmount();
+			}
+			
+			List<Target> targetList = iTargetRepository.findAll();
+			
+			//Calcula el nuevo target del usuario según parametros
+			String newTarget = businessLogic.getNewTarget(loans.size(), amountTotal, customer.getTarget(), targetList);
+			
+			customer.setTarget(newTarget);
+			iCustomerRepository.save(customer);
+			
+			log.info("Target nuevo {} ", customer.getTarget());
+			log.info("Solicitud de cambio de target aceptada {} ", new Date());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Error getting loan list", e);
+		}
+	}
+	
+	@Override
+	public void changeTargetParams(Target target) {
+		try {
+			
+			iTargetRepository.save(target);
+			
+			log.info("Target actualizado correctamente {} ", new Date());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Error updating target", e);
+		}
+		
 	}
 	
 	
@@ -113,17 +167,18 @@ public class BusinessServiceImpl implements IBusinessService{
 			if(payment.getAmount() == 0) {
 				log.info("Monto no permitido. {}, {}", payment.getAmount(), new Date());
 				paymentResponse.setMessage("Monto no permitido. Valor cero");
+				
 			}else {
 				
-				List<Payment> payments = iPaymentRepository.findByLoan(payment.getLoanId());
-				
 				Loan loan = iLoanRepository.findById(payment.getLoanId()).orElseThrow(() -> new Exception());
+				
+				List<Payment> payments = iPaymentRepository.findByLoan(loan.getLoanId());
 				
 				double debt = businessLogic.getLoanDebt(loan, payments);
 				
 				if(debt == 0 || loan.getStatus().equals("CLOSED")) {
 					log.info("El prestamo con el id {} se encuentra pagado en su totalidad. {} ",loan.getLoanId(), new Date());
-					paymentResponse.setMessage("Prestamo en estado cerrado o cancelado");
+					paymentResponse.setMessage("Prestamo en estado cerrado o cancelado totalmente.");
 					
 				}else {
 					if(payment.getAmount() > debt) {
@@ -146,7 +201,8 @@ public class BusinessServiceImpl implements IBusinessService{
 						paymentResponse.setDebt(debtAfterPayment);
 						paymentResponse.setMessage("Pago realizado exitasamente.");
 						
-						log.info("Pago realizado correctamente Id: {} Valor: {} Prestamo id: {} Fecha: {}", payment.getPaymentId(), payment.getAmount(), payment.getLoanId(), new Date() );
+						log.info("Pago realizado correctamente Id: {} Valor: {} Prestamo id: {} Fecha: {}",
+								payment.getPaymentId(), payment.getAmount(), payment.getLoanId(), new Date() );
 					}
 				}
 			}
@@ -160,45 +216,29 @@ public class BusinessServiceImpl implements IBusinessService{
 		return paymentResponse;
 		
 	}
-	
+
+
 	@Override
-	public void changeUserTarget(Long userId) {
+	public Debt getDebtByLoan(Long loanId) {
 		
-		double amountTotal = 0;
+		Debt debt = null;
 		
 		try {
-			Customer customer = iCustomerRepository.findById(userId).orElseThrow(() -> new Exception());
-			log.info("Target anterior {} ", customer.getTarget());
+			Loan loan = iLoanRepository.findById(loanId).orElseThrow(() -> new Exception());
+			List<Payment> payments = iPaymentRepository.findByLoan(loan.getLoanId());
 			
-			List<Loan> loans = iLoanRepository.findByUser(customer.getCustomerId());
+			debt = new Debt(businessLogic.getLoanDebt(loan, payments));
 			
-			for (Loan loan : loans) {
-				amountTotal += loan.getAmount();
-			}
-			
-			List<Target> targetList = iTargetRepository.findAll();
-			String newTarget = businessLogic.getNewTarget(loans.size(), amountTotal, customer.getTarget(), targetList);
-			
-			customer.setTarget(newTarget);
-			iCustomerRepository.save(customer);
-			
-			log.info("Target nuevo {} ", customer.getTarget());
-			log.info("Solicitud de cambio de target aceptada {} ", new Date());
+			log.info("Deuda del prestamo: {} es: {}", loanId, debt.getBalance());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("Error getting loan list", e);
+			log.error("Error getting debt by loan", e);
 		}
+		
+		
+		return debt;
 	}
 	
-	
-	@Override
-	public Target getTargetByType(String type) {
-		
-		Target target = iTargetRepository.findByType(type);
-		
-		return target;
-		
-	}
 
 }

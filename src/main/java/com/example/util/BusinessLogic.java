@@ -29,6 +29,16 @@ public class BusinessLogic {
 		return installment;
 	}
 
+	
+	/**
+	 * Calcula el nuevo target dados algunos parametros
+	 * @param loansCount Cantidad de prestamos
+	 * @param amountTotal Cantidad total de prestamos
+	 * @param currentTarget Target actual
+	 * @param targetList Lista de targets para conocer sus valores permitidos y poder realizar
+	 * algunos calculos
+	 * @return String nuevo target
+	 */
 	public String getNewTarget(int loansCount, double amountTotal, String currentTarget, List<Target> targetList) {
 		
 		Target tNew = null;
@@ -64,6 +74,12 @@ public class BusinessLogic {
 		return newTarget;
 	}
 
+	/**
+	 * Retorna la deuda real del prestamo
+	 * @param loan
+	 * @param payments
+	 * @return
+	 */
 	public double getLoanDebt(Loan loan, List<Payment> payments) {
 		
 		if(loan.getStatus().equals("CLOSED")) {

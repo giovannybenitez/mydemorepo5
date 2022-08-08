@@ -25,24 +25,39 @@ sSi se desea ingresar a la consola de H2 para visualizar los datos, se debe real
 3. Oprimir botón "Test connection"
 3. Oprimir botón "Connect"
 
-- select * from target;
-- select * from customer;
-- select * from loan;
 
-Postman collectioncurl -X GET localhost:8080/quiz -H "Accept: application/json" -H "Content-Type: application/json"
+	- select * from target;
+	- select * from customer;
+	- select * from loan;
 
 
 ## Eventos disponibles para ejecutar en Curl
 
+**Crear solicitud de prestamo:**
 
+```
 curl -X POST localhost:8080/create-loan-request -H 'Content-type:application/json' -d '{"amount":1000,"term":12,"userId":5}'
+```
+**Obtener prestamos por fechas y paginado:**
 
+```
 curl -X GET localhost:8080/loans -H "Accept: application/json" -H "Content-Type: application/json" -d '{"from":"2019-01-01T00:00:00", "to":"2019-12-31T23:59:59", "page":0, "size":5}'
+```
+**Registrar un pago por prestamo:**
 
-
+```
 curl -X POST localhost:8080/register-payment -H 'Content-type:application/json' -d '{"loanId":28,"amount":0}'
+```
+
+**Obtener deuda por prestamo:**
+
+```
+curl -X GET localhost:8080/debt-by-loan/1 -H "Accept: application/json" -H "Content-Type: application/json" -d '{"date":""}'
+```
 
 
-curl -X POST localhost:8080/create-quiz -H 'Content-type:application/json' -d '{"quizId":null,"questions":[{"questionId":null,"question":"Capital de Colombia?","option1":"Medellin","option2":"Bogota","option3":"Cali","option4":"Armenia","correctAnswer":"Bogota","quiz":null},{"questionId":null,"question":"Cantidad departamentos tiene Colombia?","option1":"25","option2":"37","option3":"32","option4":"30","correctAnswer":"32","quiz":null}],"date":"2022-08-04T14:13:44.041+00:00"}'
+**Cur de prueba:**
 
+```
 curl -X PUT http://localhost:8080/set-quiz-schedule/17/2022-10-01 -H 'Content-type:application/json'
+```

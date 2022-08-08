@@ -14,13 +14,14 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import com.example.model.Debt;
 import com.example.model.Loan;
 import com.example.model.LoanRequest;
 import com.example.model.LoanResponse;
 import com.example.model.Payment;
 import com.example.model.PaymentResponse;
+import com.example.model.Target;
 import com.example.service.IBusinessService;
-import com.example.util.BusinessLogic;
 import com.example.util.DateUtil;
 
 @SpringBootApplication
@@ -31,9 +32,6 @@ public class Application implements CommandLineRunner{
 	
 	@Autowired
 	private IBusinessService iBusinessService;
-	
-	@Autowired
-	private BusinessLogic businessLogic;
 	
 	@Autowired
 	private DateUtil dateUtil;
@@ -55,10 +53,10 @@ public class Application implements CommandLineRunner{
 		//this.createLoanRequest();
 		
 		//Method #1.1
-		//this.calculateInstallmentValue();
+		//this.changeUserTarget();
 		
 		//Method #1.2
-		//this.changeUserTarget();
+		//this.changeTargetParams();
 		
 		//Method #2
 		//this.getLoansByDateFilter();
@@ -66,20 +64,25 @@ public class Application implements CommandLineRunner{
 		//Method #3
 		//this.registerPayment();
 		
+		//Method #4
+		//this.getDebtByLoan();
+		
 	}
 	
+
 	public void createLoanRequest() {
-		LoanResponse lr = iBusinessService.createLoanRequest(new LoanRequest(550000, 12, Long.valueOf(1)));
-		log.info("Solicitud de prestamo aceptada id: {} y valor de la cuota mensual {}", lr.getLoanId(), lr.getInstallment());
-	}
-	
-	public void calculateInstallmentValue() {
-		double i = businessLogic.calculateInstallmentValue(1000, 12, 0.05);
-		log.info("Valor de la cuota a pagar: {} ", i);
+		LoanResponse lr = iBusinessService.createLoanRequest(new LoanRequest(550000, 12, Long.valueOf(2)));
+		log.info("Solicitud de prestamo aceptada id: {}, valor de la cuota mensual: {}, Mensaje: {} ", lr.getLoanId(), lr.getInstallment(), lr.getMessage());
 	}
 	
 	public void changeUserTarget() {
 		iBusinessService.changeUserTarget(Long.valueOf(1));
+	}
+	
+	public void changeTargetParams() {
+		Target t = new Target("NEW", 0, 2, 0, 100000, 0.16, 500000);
+		t.setTargetId(Long.valueOf(1));
+		iBusinessService.changeTargetParams(t);
 	}
 	
 	public void getLoansByDateFilter() {
@@ -97,7 +100,10 @@ public class Application implements CommandLineRunner{
 		log.info("Respuesta del pago realizado: {} ", pr.getId());
 	}
 	
-	
+	public void getDebtByLoan() {
+		Debt debt = iBusinessService.getDebtByLoan(Long.valueOf(4));
+		log.info("Deuda por pago: {} ", debt.getBalance());
+	}
 
 
 }
