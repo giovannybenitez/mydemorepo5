@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.example.model.LoanRequest;
+import com.example.model.LoanResponse;
 import com.example.model.Target;
+import com.example.service.IBusinessService;
 import com.example.util.BusinessLogic;
 
 @RunWith(SpringRunner.class)
@@ -18,16 +21,50 @@ import com.example.util.BusinessLogic;
 class BusinessLogicTests {
 	
 	@Autowired
+	private IBusinessService iBusinessService;
+	
+	@Autowired
 	private BusinessLogic businessLogic;
-
+	
 	@Test
 	void contextLoads() {
 	}
 	
 	@Test
+	public void createLoanRequestUserNotFound() {
+		LoanResponse lr = iBusinessService.createLoanRequest(new LoanRequest(550000, 12, Long.valueOf(25)));
+		Assert.assertEquals(lr.getErrorCode(),"1");
+	}
+	
+	@Test
+	public void createLoanRequestAmountNotAllowed() {
+		LoanResponse lr = iBusinessService.createLoanRequest(new LoanRequest(550000, 12, Long.valueOf(1)));
+		Assert.assertEquals(lr.getErrorCode(),"2");
+	}
+	
+	@Test
+	public void createLoanRequest() {
+		LoanResponse lr = iBusinessService.createLoanRequest(new LoanRequest(2000, 12, Long.valueOf(1)));
+		Assert.assertEquals(lr.getInstallment(), 46.81, 2);
+	}
+	
+	
+	@Test
 	public void calculateInstallmentValue() {
+		Assert.assertEquals(businessLogic.calculateInstallmentValue(1000, 12, 0.95), 97.76, 2);
+	}
+	
+	@Test
+	public void changeTargetParams() {
+		Target t = new Target("NEW", 0, 2, 0, 100000, 0.16, 500000);
+		t.setTargetId(Long.valueOf(1));
 		
-		Assert.assertEquals(businessLogic.calculateInstallmentValue(1000, 12, 0.05), 90.52,2);
+		t = iBusinessService.changeTargetParams(t);
+		
+		Assert.assertEquals(t.getType(), "NEW");
+		Assert.assertNotEquals(t.getType(), "PREMIUM");
+		Assert.assertEquals(t.getRate(), 0.16, 2);
+		Assert.assertEquals(t.getMaxAmount(), 500000, 0);
 	}
 	
 	@Test

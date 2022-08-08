@@ -6,7 +6,9 @@ public class LoanResponse {
 	
 	private double installment;
 	
-	private String message;
+	private String errorCode;
+	
+	private String errorMessage;
 	
 	public LoanResponse(Long loanId, double installment) {
 		super();
@@ -14,9 +16,10 @@ public class LoanResponse {
 		this.installment = installment;
 	}
 
-	public LoanResponse(String message) {
+	public LoanResponse(String errorCode, String errorMessage) {
 		super();
-		this.message = message;
+		this.errorCode = errorCode;
+		this.errorMessage = errorMessage;
 	}
 
 	public Long getLoanId() {
@@ -35,12 +38,22 @@ public class LoanResponse {
 		this.installment = installment;
 	}
 
-	public String getMessage() {
-		return message;
+	public String getErrorCode() {
+		return errorCode;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
 	}
 
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	
+	
+	
 }

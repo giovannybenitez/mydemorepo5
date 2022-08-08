@@ -62,12 +62,17 @@ public class BusinessServiceImpl implements IBusinessService{
 		
 		try {
 			
-			customer = iCustomerRepository.findById(loanRequest.getUserId()).orElseThrow(() -> new Exception());
+			try {
+				customer = iCustomerRepository.findById(loanRequest.getUserId()).orElseThrow(() -> new Exception());
+			} catch (Exception e) {
+				log.error("User no found", e);
+				return new LoanResponse("1", "Usuario no existe" + loanRequest.getUserId());
+			}
 			
 			target = iTargetRepository.findByType(customer.getTarget());
 			
 			if(loanRequest.getAmount() > target.getMaxAmount()) {
-				return new LoanResponse("Monto solicitado no permitido para usuario target: " + target.getType());
+				return new LoanResponse("2", "Monto solicitado no permitido para usuario target: " + target.getType());
 			}
 			
 			Loan loan = new Loan(loanRequest.getAmount(), loanRequest.getTerm(), target.getRate(), 
@@ -149,7 +154,6 @@ public class BusinessServiceImpl implements IBusinessService{
 		List<Loan> loans = null;
 		
 		try {
-			//loans = iLoanRepository.findByDateFilter(startDate, endDate);
 			loans = (List<Loan>) iLoanRepository.findByDateFilter(startDate, endDate, pageable);
 					
 			log.info("Size {}", loans.size());

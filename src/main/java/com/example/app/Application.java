@@ -78,7 +78,7 @@ public class Application implements CommandLineRunner{
 
 	public void createLoanRequest() {
 		LoanResponse lr = iBusinessService.createLoanRequest(new LoanRequest(550000, 12, Long.valueOf(2)));
-		log.info("Solicitud de prestamo aceptada id: {}, valor de la cuota mensual: {}, Mensaje: {} ", lr.getLoanId(), lr.getInstallment(), lr.getMessage());
+		log.info("Solicitud de prestamo aceptada id: {}, valor de la cuota mensual: {}, Mensaje: {} ", lr.getLoanId(), lr.getInstallment(), lr.getErrorMessage());
 	}
 	
 	public void changeUserTarget() {

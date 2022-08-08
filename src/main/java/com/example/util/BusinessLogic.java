@@ -1,5 +1,7 @@
 package com.example.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -23,17 +25,19 @@ public class BusinessLogic {
 	public double calculateInstallmentValue(double amount, int term, double rate) {
 		
 		
-		Double r = rate / term;//0.004166666666666667
-		Double a = (r + r) ; //0.008333333333333333
-		Double b = Math.pow((1+r), (term-1)) / 11; //1.0468002302556678 //Espero 0.097
-		Double c = (a / b); //  0.0856 esto es lo que esperaria
-		
-		Double installment = c * amount;
+		Double r = rate / (term);//0.004166666666666667
+//		Double a = (r + r) ; //0.008333333333333333
+//		Double b = Math.pow((1+r), (term-1)) / 11; //1.0468002302556678 //Espero 0.097
+//		Double c = (a / b); //  0.0856 esto es lo que esperaria
+//		
+//		Double installment = c * amount;
 		
 		//                    [ r + r / ( (1+r) ^ term - 1) ]          x amount
-		//double installment = ( r + r / ( Math.pow((1+r), term - 1) )) * amount;
+		Double installment = ( r + r / ( Math.pow((1+r), (term - 1) ) )) * amount;
+		
+		BigDecimal bd = new BigDecimal(installment).setScale(2, RoundingMode.HALF_UP);
 
-		return installment;
+		return bd.doubleValue();
 	}
 
 	
