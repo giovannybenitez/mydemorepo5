@@ -23,6 +23,12 @@ public interface ILoanRepository extends PagingAndSortingRepository<Loan, Long> 
 	@Query(value = "SELECT * FROM loan WHERE user_id = :userId", nativeQuery = true)
 	public List<Loan> findByUser(@Param("userId") Long userId);
 	
+	@Query(value = "SELECT * FROM loan WHERE status = :status", nativeQuery = true)
+	public List<Loan> findByStatus(@Param("status") String status);
+	
+	@Query(value = "SELECT * FROM loan WHERE target = :target and status = 'OPEN'", nativeQuery = true)
+	public List<Loan> findByTarget(@Param("target") String target);
+	
 
 }
 	

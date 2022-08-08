@@ -15,7 +15,7 @@ Adicionalmente se siguen las recomendaciones que se especifican en el Challenge 
 
 
 Al ejecutar la aplicación con spring boot, por defecto se ejecutará unos scripts de bases de datos que se encuentran en el archivo /src/main/resources/data.sql
-sSi se desea ingresar a la consola de H2 para visualizar los datos, se debe realizar los siguientes pasos:
+Si se desea ingresar a la consola de H2 para visualizar los datos, se debe realizar los siguientes pasos:
 
 1. Cargar la siguiente url en su navegador: http://localhost:8080/h2-console
 2. Agregar parametros de conexión
@@ -24,12 +24,25 @@ sSi se desea ingresar a la consola de H2 para visualizar los datos, se debe real
 	- Password:
 3. Oprimir botón "Test connection"
 3. Oprimir botón "Connect"
+4. Ejecutar los siguientes scripts
 
 
-	- select * from target;
-	- select * from customer;
-	- select * from loan;
+## Scripts para validar información en la base de datos
 
+```
+select * from target;
+
+select * from customer;
+
+select * from loan;
+
+select * from payment;
+
+
+select * from loan where user_id = 5;
+select * from payment where loan_id = 4;
+
+```
 
 ## Eventos disponibles para ejecutar en Curl
 
@@ -49,10 +62,22 @@ curl -X GET localhost:8080/loans -H "Accept: application/json" -H "Content-Type:
 curl -X POST localhost:8080/register-payment -H 'Content-type:application/json' -d '{"loanId":28,"amount":0}'
 ```
 
-**Obtener deuda por prestamo:**
+**Obtener deuda por identificador del prestamo:**
 
 ```
 curl -X GET localhost:8080/debt-by-loan/1 -H "Accept: application/json" -H "Content-Type: application/json" -d '{"date":""}'
+```
+
+**Obtener deuda de todos los prestamos:**
+
+```
+curl -X GET localhost:8080/debt-by-all-loans -H "Accept: application/json" -H "Content-Type: application/json" -d '{"date":""}'
+```
+
+**Obtener deuda de los prestamos por target:**
+
+```
+curl -X GET localhost:8080/debt-by-target/NEW -H "Accept: application/json" -H "Content-Type: application/json" -d '{"date":""}'
 ```
 
 

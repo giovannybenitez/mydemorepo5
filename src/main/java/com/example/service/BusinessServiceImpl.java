@@ -240,5 +240,58 @@ public class BusinessServiceImpl implements IBusinessService{
 		return debt;
 	}
 	
+	
+	@Override
+	public Debt getDebtByOpenLoans() {
+		Debt debt = null;
+		
+		try {
+			List<Loan> loans = iLoanRepository.findByStatus("OPEN");
+			
+			double partialDebt = 0;
+			for (Loan loan : loans) {
+				List<Payment> payments = iPaymentRepository.findByLoan(loan.getLoanId());
+				partialDebt += businessLogic.getLoanDebt(loan, payments);
+			}
+			debt = new Debt(partialDebt);
+			
+			log.info("Deuda total de todos los prestamos es: {}", debt.getBalance());
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Error getting debt by loan", e);
+		}
+		
+		
+		return debt;
+	}
+	
+	@Override
+	public Debt getDebtByTarget(String target) {
+		Debt debt = null;
+		
+		try {
+			List<Loan> loans = iLoanRepository.findByTarget(target);
+			
+			double partialDebt = 0;
+			for (Loan loan : loans) {
+				List<Payment> payments = iPaymentRepository.findByLoan(loan.getLoanId());
+				partialDebt += businessLogic.getLoanDebt(loan, payments);
+			}
+			debt = new Debt(partialDebt);
+			
+			log.info("Deuda total de todos los prestamos con Target {} es: {}", target, debt.getBalance());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Error getting debt by loan", e);
+		}
+		
+		
+		return debt;
+	}
+	
 
 }

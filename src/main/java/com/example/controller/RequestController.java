@@ -76,11 +76,35 @@ public class RequestController {
 	@GetMapping(value = "/debt-by-loan/{loanId}")
 	public Debt debtByLoan(@RequestBody String body, @PathVariable("loanId") Long loanId) {
 		
-		JSONObject jsonObject = new JSONObject(body);
-		String date = (String) jsonObject.get("date");
+//		JSONObject jsonObject = new JSONObject(body);
+//		String date = (String) jsonObject.get("date");
 		
 		Debt debt = iBusinessService.getDebtByLoan(loanId);
 		log.info("Deuda por pago: {} ", debt.getBalance());
+		
+		return debt;
+	}
+	
+	@GetMapping(value = "/debt-by-all-loans")
+	public Debt getDebtByOpenLoans(@RequestBody String body) {
+		
+//		JSONObject jsonObject = new JSONObject(body);
+//		String date = (String) jsonObject.get("date");
+		
+		Debt debt = iBusinessService.getDebtByOpenLoans();
+		log.info("Deuda: {} ", debt.getBalance());
+		
+		return debt;
+	}
+	
+	@GetMapping(value = "/debt-by-target/{target}")
+	public Debt debtByTarget(@RequestBody String body, @PathVariable("target") String target) {
+		
+//		JSONObject jsonObject = new JSONObject(body);
+//		String date = (String) jsonObject.get("date");
+		
+		Debt debt = iBusinessService.getDebtByTarget(target);
+		log.info("Deuda: {} ", debt.getBalance());
 		
 		return debt;
 	}

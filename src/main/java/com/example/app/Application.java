@@ -67,6 +67,12 @@ public class Application implements CommandLineRunner{
 		//Method #4
 		//this.getDebtByLoan();
 		
+		//Method #5
+		//this.getDebtByOpenLoans();
+		
+		//Method #6
+		//this.getDebtByTarget();
+		
 	}
 	
 
@@ -104,6 +110,19 @@ public class Application implements CommandLineRunner{
 		Debt debt = iBusinessService.getDebtByLoan(Long.valueOf(4));
 		log.info("Deuda por pago: {} ", debt.getBalance());
 	}
+	
+	public void getDebtByOpenLoans() {
+		Debt debt = iBusinessService.getDebtByOpenLoans();
+		log.info("Deuda prestamos abiertos: {} ", debt.getBalance());
+	}
+	
+	public void getDebtByTarget() {
+		String target = "NEW";
+		Debt debt = iBusinessService.getDebtByTarget(target);
+		log.info("Deuda prestamos con target {} es: {} ", target, debt.getBalance());
+	}
+	
+	
 
 
 }

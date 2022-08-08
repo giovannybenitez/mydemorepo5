@@ -37,7 +37,7 @@ INSERT INTO loan (amount, term, rate, user_id, target, date, status) VALUES (100
 INSERT INTO loan (amount, term, rate, user_id, target, date, status) VALUES (4000, 2, 0.15, 6, 'FREQUENT', '2020-09-25 16:59:08.513','OPEN');
 INSERT INTO loan (amount, term, rate, user_id, target, date, status) VALUES (1000, 4, 0.05, 1, 'PREMIUM', '2022-05-05 16:59:08.513','OPEN');
 INSERT INTO loan (amount, term, rate, user_id, target, date, status) VALUES (2000, 4, 0.05, 3, 'PREMIUM', '2022-06-05 16:59:08.513','OPEN');
-INSERT INTO loan (amount, term, rate, user_id, target, date, status) VALUES (5000, 4, 0.05, 5, 'PREMIUM', '2022-07-05 16:59:08.513','OPEN');
+INSERT INTO loan (amount, term, rate, user_id, target, date, status) VALUES (7000, 4, 0.05, 5, 'PREMIUM', '2022-07-05 16:59:08.513','OPEN');
 
 
 INSERT INTO payment (amount, loan_id, date) VALUES (5000, 1, '2022-01-01 00:00:00.513');

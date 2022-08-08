@@ -51,6 +51,17 @@ public interface IBusinessService {
 	 */
 	public Debt getDebtByLoan(Long loanId);
 
+	/**
+	 * @return
+	 */
+	public Debt getDebtByOpenLoans();
+
+	/**
+	 * @param target
+	 * @return
+	 */
+	public Debt getDebtByTarget(String target);
+
 	
 
 }
