@@ -7,7 +7,7 @@ INSERT INTO customer (first_name, last_name, target) VALUES ('Andres', 'Velez', 
 INSERT INTO customer (first_name, last_name, target) VALUES ('Juliana', 'Garcia', 'FREQUENT');
 INSERT INTO customer (first_name, last_name, target) VALUES ('Luz Maria', 'Gomez', 'PREMIUM');
 INSERT INTO customer (first_name, last_name, target) VALUES ('Oscar', 'Martinez', 'NEW');
-INSERT INTO customer (first_name, last_name, target) VALUES ('James', 'Arango', 'FREQUENT');
+INSERT INTO customer (first_name, last_name, target) VALUES ('James', 'Arango', 'PREMIUM');
 INSERT INTO customer (first_name, last_name, target) VALUES ('Diana', 'Ospina', 'PREMIUM');
 
 

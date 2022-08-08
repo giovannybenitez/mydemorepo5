@@ -64,7 +64,7 @@ public class Application implements CommandLineRunner{
 		//this.getLoansByDateFilter();
 		
 		//Method #3
-		this.registerPayment();
+		//this.registerPayment();
 		
 	}
 	
@@ -93,13 +93,8 @@ public class Application implements CommandLineRunner{
 	
 	public void registerPayment() {
 		
-		//Escenario 1: monto 0 OK
-		//Escenario 2: Prestamo cerrado OK
-		//Escenario 3: monto mayor a la deuda OK
-		//Escenario 4: probar con varios pagos que esten en base de datos
-		//PaymentResponse con valores para todos los escenarios
 		PaymentResponse pr = iBusinessService.registerPayment(new Payment(Long.valueOf(4), 85, new Date()));
-		log.info("Respuesta del pago realizado: {} ", pr);
+		log.info("Respuesta del pago realizado: {} ", pr.getId());
 	}
 	
 	

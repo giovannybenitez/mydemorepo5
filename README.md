@@ -31,10 +31,17 @@ sSi se desea ingresar a la consola de H2 para visualizar los datos, se debe real
 
 Postman collectioncurl -X GET localhost:8080/quiz -H "Accept: application/json" -H "Content-Type: application/json"
 
-curl -X GET localhost:8080/collect-student-responses/1 -H "Accept: application/json" -H "Content-Type: application/json"
+
+## Eventos disponibles para ejecutar en Curl
 
 
-curl -X POST localhost:8080/create-student -H 'Content-type:application/json' -d '{"name":"Giovanny","age":34,"city":"Medellin","timeZone":"GMT-5"}'
+curl -X POST localhost:8080/create-loan-request -H 'Content-type:application/json' -d '{"amount":1000,"term":12,"userId":5}'
+
+curl -X GET localhost:8080/loans -H "Accept: application/json" -H "Content-Type: application/json" -d '{"from":"2019-01-01T00:00:00", "to":"2019-12-31T23:59:59", "page":0, "size":5}'
+
+
+curl -X POST localhost:8080/register-payment -H 'Content-type:application/json' -d '{"loanId":28,"amount":0}'
+
 
 curl -X POST localhost:8080/create-quiz -H 'Content-type:application/json' -d '{"quizId":null,"questions":[{"questionId":null,"question":"Capital de Colombia?","option1":"Medellin","option2":"Bogota","option3":"Cali","option4":"Armenia","correctAnswer":"Bogota","quiz":null},{"questionId":null,"question":"Cantidad departamentos tiene Colombia?","option1":"25","option2":"37","option3":"32","option4":"30","correctAnswer":"32","quiz":null}],"date":"2022-08-04T14:13:44.041+00:00"}'
 

@@ -7,12 +7,19 @@ public class PaymentResponse {
 	private Long loanId;
 	
 	private double debt;
+	
+	private String message;
 
 	public PaymentResponse(Long id, Long loanId, double debt) {
 		super();
 		this.id = id;
 		this.loanId = loanId;
 		this.debt = debt;
+	}
+	
+	public PaymentResponse(Long loanId) {
+		super();
+		this.loanId = loanId;
 	}
 
 	public Long getId() {
@@ -37,6 +44,14 @@ public class PaymentResponse {
 
 	public void setDebt(double debt) {
 		this.debt = debt;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	
 }

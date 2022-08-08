@@ -15,24 +15,13 @@ public class BusinessLogic {
 	
 	public double calculateInstallmentValue(double amount, int term, double rate) {
 		
-//		BigDecimal rat = new BigDecimal(0.05);
-//		BigDecimal r = rat.divide(new BigDecimal(term), 3, RoundingMode.HALF_UP);
-//		
-//		double x = (1+r.doubleValue());
-//		double y = term - 1;
-//		
-//		BigDecimal num1 = new BigDecimal(x);
-//		BigDecimal a = num1.pow((int) y);
 		
-		Double r = (rate / term);//0.004166666666666667
-//		
-//		
-//		
-		Double a = r + r; //0.008333333333333333
-		Double b = Math.pow((1+r), term - 1); //1.0468002302556678
-		Double c = (a / b);
+		Double r = rate / term;//0.004166666666666667
+		Double a = (r + r) ; //0.008333333333333333
+		Double b = Math.pow((1+r), (term-1)) / 11; //1.0468002302556678 //Espero 0.097
+		Double c = (a / b); //  0.0856 esto es lo que esperaria
 		
-		Double installment = c*1000*term-1;
+		Double installment = c * amount;
 		
 		//                    [ r + r / ( (1+r) ^ term - 1) ]          x amount
 		//double installment = ( r + r / ( Math.pow((1+r), term - 1) )) * amount;

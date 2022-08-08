@@ -85,7 +85,6 @@ public class BusinessServiceImpl implements IBusinessService{
 	}
 	
 	
-
 	@Override
 	public List<Loan> getLoansByDateFilter(Date startDate, Date endDate, int page, int size) {
 		
@@ -105,13 +104,15 @@ public class BusinessServiceImpl implements IBusinessService{
 		return loans;
 	}
 	
+	@Transactional
 	@Override
 	public PaymentResponse registerPayment(Payment payment) {
-		PaymentResponse paymentResponse = null;
+		PaymentResponse paymentResponse = new PaymentResponse(payment.getLoanId());
 		try {
 			
 			if(payment.getAmount() == 0) {
 				log.info("Monto no permitido. {}, {}", payment.getAmount(), new Date());
+				paymentResponse.setMessage("Monto no permitido. Valor cero");
 			}else {
 				
 				List<Payment> payments = iPaymentRepository.findByLoan(payment.getLoanId());
@@ -122,12 +123,29 @@ public class BusinessServiceImpl implements IBusinessService{
 				
 				if(debt == 0 || loan.getStatus().equals("CLOSED")) {
 					log.info("El prestamo con el id {} se encuentra pagado en su totalidad. {} ",loan.getLoanId(), new Date());
+					paymentResponse.setMessage("Prestamo en estado cerrado o cancelado");
+					
 				}else {
 					if(payment.getAmount() > debt) {
 						log.info("Monto a pagar {} no puede ser superior a la deuda. {}, {}", payment.getAmount(), debt, new Date());
+						paymentResponse.setMessage("Monto no permitido. supera el valor de la deuda");
+						
 					}else {
+						payment.setDate(new Date());
 						payment = iPaymentRepository.save(payment);
-						paymentResponse = new PaymentResponse(payment.getPaymentId(), payment.getLoanId(), debt - payment.getAmount());
+						
+						double debtAfterPayment = debt - payment.getAmount();
+						
+						if(debtAfterPayment == 0) {
+							loan.setStatus("CLOSED");
+							iLoanRepository.save(loan);
+						}
+						
+						paymentResponse.setId(payment.getPaymentId());
+						paymentResponse.setLoanId(payment.getLoanId());
+						paymentResponse.setDebt(debtAfterPayment);
+						paymentResponse.setMessage("Pago realizado exitasamente.");
+						
 						log.info("Pago realizado correctamente Id: {} Valor: {} Prestamo id: {} Fecha: {}", payment.getPaymentId(), payment.getAmount(), payment.getLoanId(), new Date() );
 					}
 				}
@@ -143,9 +161,6 @@ public class BusinessServiceImpl implements IBusinessService{
 		
 	}
 	
-
-	
-
 	@Override
 	public void changeUserTarget(Long userId) {
 		
