@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ import com.example.model.LoanRequest;
 import com.example.model.LoanResponse;
 import com.example.model.Payment;
 import com.example.model.PaymentResponse;
+import com.example.model.Target;
 import com.example.service.IBusinessService;
 import com.example.util.DateUtil;
 
@@ -74,10 +76,7 @@ public class RequestController {
 	
 	
 	@GetMapping(value = "/debt-by-loan/{loanId}")
-	public Debt debtByLoan(@RequestBody String body, @PathVariable("loanId") Long loanId) {
-		
-//		JSONObject jsonObject = new JSONObject(body);
-//		String date = (String) jsonObject.get("date");
+	public Debt debtByLoan(@PathVariable("loanId") Long loanId) {
 		
 		Debt debt = iBusinessService.getDebtByLoan(loanId);
 		log.info("Deuda por pago: {} ", debt.getBalance());
@@ -88,10 +87,10 @@ public class RequestController {
 	@GetMapping(value = "/debt-by-all-loans")
 	public Debt getDebtByOpenLoans(@RequestBody String body) {
 		
-//		JSONObject jsonObject = new JSONObject(body);
-//		String date = (String) jsonObject.get("date");
+		JSONObject jsonObject = new JSONObject(body);
+		String date = (String) jsonObject.get("date");
 		
-		Debt debt = iBusinessService.getDebtByOpenLoans();
+		Debt debt = iBusinessService.getDebtByOpenLoans(dateUtil.convertStringDateToDate(date));
 		log.info("Deuda: {} ", debt.getBalance());
 		
 		return debt;
@@ -100,13 +99,28 @@ public class RequestController {
 	@GetMapping(value = "/debt-by-target/{target}")
 	public Debt debtByTarget(@RequestBody String body, @PathVariable("target") String target) {
 		
-//		JSONObject jsonObject = new JSONObject(body);
-//		String date = (String) jsonObject.get("date");
+		JSONObject jsonObject = new JSONObject(body);
+		String date = (String) jsonObject.get("date");
 		
-		Debt debt = iBusinessService.getDebtByTarget(target);
+		Debt debt = iBusinessService.getDebtByTarget(target, dateUtil.convertStringDateToDate(date));
 		log.info("Deuda: {} ", debt.getBalance());
 		
 		return debt;
+	}
+	
+	
+	@PutMapping(value = "/change-target/{targetId}/{type}")
+	public Target changeTargetParams(@RequestBody Target target, 
+			@PathVariable("targetId") Long targetId, @PathVariable("type") String type) {
+		
+		target.setTargetId(targetId);
+		target.setType(type);
+		
+		target = iBusinessService.changeTargetParams(target);
+		log.info("Parametros del target {} configurados correctamente ", target.getType());
+		
+		return target;
+		
 	}
 	
 	

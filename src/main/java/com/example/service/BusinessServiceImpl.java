@@ -124,10 +124,10 @@ public class BusinessServiceImpl implements IBusinessService{
 	}
 	
 	@Override
-	public void changeTargetParams(Target target) {
+	public Target changeTargetParams(Target target) {
 		try {
 			
-			iTargetRepository.save(target);
+			target = iTargetRepository.save(target);
 			
 			log.info("Target actualizado correctamente {} ", new Date());
 			
@@ -135,6 +135,8 @@ public class BusinessServiceImpl implements IBusinessService{
 			e.printStackTrace();
 			log.error("Error updating target", e);
 		}
+		
+		return target;
 		
 	}
 	
@@ -242,11 +244,11 @@ public class BusinessServiceImpl implements IBusinessService{
 	
 	
 	@Override
-	public Debt getDebtByOpenLoans() {
+	public Debt getDebtByOpenLoans(Date to) {
 		Debt debt = null;
 		
 		try {
-			List<Loan> loans = iLoanRepository.findByStatus("OPEN");
+			List<Loan> loans = iLoanRepository.findByStatus("OPEN", to);
 			
 			double partialDebt = 0;
 			for (Loan loan : loans) {
@@ -269,11 +271,11 @@ public class BusinessServiceImpl implements IBusinessService{
 	}
 	
 	@Override
-	public Debt getDebtByTarget(String target) {
+	public Debt getDebtByTarget(String target, Date to) {
 		Debt debt = null;
 		
 		try {
-			List<Loan> loans = iLoanRepository.findByTarget(target);
+			List<Loan> loans = iLoanRepository.findByTarget(target, to);
 			
 			double partialDebt = 0;
 			for (Loan loan : loans) {

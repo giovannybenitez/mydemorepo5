@@ -14,53 +14,63 @@ import com.example.model.Target;
 public interface IBusinessService {
 	
 	/**
-	 * Retorna una solicitud de prestamo con su respectivo estado.
+	 * Devuelve una solicitud de prestamo con su respectivo estado.
 	 * @param loanRequest Objeto con los parametros (amount, term y userId)
-	 * @return Respuesta de una solicitud de prestamo
+	 * @return Respuesta de una solicitud de prestamo.
 	 */
 	public LoanResponse createLoanRequest(LoanRequest loanRequest);
 	
 	/**
-	 * @param userId
+	 * Modífica el target del usuario según la lógica de negocio.
+	 * @param userId usuario actualizado
 	 */
 	public void changeUserTarget(Long userId);
 	
 	/**
+	 * Modífica algunos parametros de un target
 	 * @param target
-	 */
-	public void changeTargetParams(Target target);
+	 * @return target Target actualizado.
+ 	 */
+	public Target changeTargetParams(Target target);
 
 	/**
+	 * Devuelve un listado de prestamos según los filtros.
 	 * @param startDate
 	 * @param endDate
 	 * @param page
 	 * @param size
-	 * @return
+	 * @return List<Loan> Listado de prestamos.
 	 */
 	public List<Loan> getLoansByDateFilter(Date startDate, Date endDate, int page, int size);
 
 	/**
+	 * Registra un nuevo pago para un prestamo actual. 
 	 * @param payment
-	 * @return
+	 * @return PaymentResponse Respuesta del pago realizado.
 	 */
 	public PaymentResponse registerPayment(Payment payment);
 
 	/**
+	 * Devuelve la deuda de un prestamo.
 	 * @param loanId
-	 * @return
+	 * @return Debt Deuda.
 	 */
 	public Debt getDebtByLoan(Long loanId);
 
 	/**
-	 * @return
+	 * Devuelve la deuda total de todos los prestamossegún fecha pasada como parametro.
+	 * @param to
+	 * @return Debt Deuda.
 	 */
-	public Debt getDebtByOpenLoans();
+	public Debt getDebtByOpenLoans(Date to);
 
 	/**
+	 * Devuelve la deuda total de los prestamos según target y fecha pasados como parametros.
 	 * @param target
+	 * @param to
 	 * @return
 	 */
-	public Debt getDebtByTarget(String target);
+	public Debt getDebtByTarget(String target, Date to);
 
 	
 

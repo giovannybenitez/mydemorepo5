@@ -13,6 +13,13 @@ public class BusinessLogic {
 	
 	enum eTarget { NEW, FREQUENT, PREMIUM}
 	
+	/**
+	 * Retorna la cuota mensual sugún el monto, el plazo y la tasa de interés
+	 * @param amount
+	 * @param term
+	 * @param rate
+	 * @return installment valor cuota mensual
+	 */
 	public double calculateInstallmentValue(double amount, int term, double rate) {
 		
 		
@@ -31,7 +38,7 @@ public class BusinessLogic {
 
 	
 	/**
-	 * Calcula el nuevo target dados algunos parametros
+	 * Calcula el nuevo target dado algunos parametros
 	 * @param loansCount Cantidad de prestamos
 	 * @param amountTotal Cantidad total de prestamos
 	 * @param currentTarget Target actual
@@ -75,7 +82,7 @@ public class BusinessLogic {
 	}
 
 	/**
-	 * Retorna la deuda real del prestamo
+	 * Retorna la deuda real de un prestamo
 	 * @param loan
 	 * @param payments
 	 * @return

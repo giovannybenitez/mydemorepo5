@@ -1,6 +1,6 @@
 INSERT INTO target (target_id, type, min_loan_count, max_loan_count, min_loan_allowed, max_loan_allowed, rate, max_amount) VALUES (1, 'NEW', 0, 2, 0, 100000, 0.15, 500000);
 INSERT INTO target (target_id, type, min_loan_count, max_loan_count, min_loan_allowed, max_loan_allowed, rate, max_amount) VALUES (2, 'FREQUENT', 2, 5, 100000, 500000, 0.10, 1000000);
-INSERT INTO target (target_id, type, min_loan_count, max_loan_count, min_loan_allowed, max_loan_allowed, rate, max_amount) VALUES (3, 'PREMIUM', 5, 1000, 500000, 100000, 0.05, 5000000);
+INSERT INTO target (target_id, type, min_loan_count, max_loan_count, min_loan_allowed, max_loan_allowed, rate, max_amount) VALUES (3, 'PREMIUM', 5, 1000, 500000, 500000, 0.05, 5000000);
 
 
 INSERT INTO customer (first_name, last_name, target) VALUES ('Andres', 'Velez', 'NEW');
