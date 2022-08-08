@@ -26,13 +26,13 @@ public class BusinessLogic {
 		
 		
 		Double r = rate / (term);//0.004166666666666667
+		
 //		Double a = (r + r) ; //0.008333333333333333
-//		Double b = Math.pow((1+r), (term-1)) / 11; //1.0468002302556678 //Espero 0.097
+//		Double b = Math.pow((1+r), (term-1)); //1.0468002302556678 //Espero 0.097
 //		Double c = (a / b); //  0.0856 esto es lo que esperaria
-//		
 //		Double installment = c * amount;
 		
-		//                    [ r + r / ( (1+r) ^ term - 1) ]          x amount
+		// Formula original  [ r + r / ( (1+r) ^ term - 1) ]             x amount
 		Double installment = ( r + r / ( Math.pow((1+r), (term - 1) ) )) * amount;
 		
 		BigDecimal bd = new BigDecimal(installment).setScale(2, RoundingMode.HALF_UP);

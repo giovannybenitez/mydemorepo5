@@ -90,3 +90,15 @@ curl -X GET localhost:8080/debt-by-target/PREMIUM -H "Accept: application/json" 
 ```
 curl -X PUT http://localhost:8080/change-target/3/PREMIUM -H "Accept: application/json" -H 'Content-type:application/json' -d '{"minLoanCount":5, "maxLoanCount":1000, "minLoanAllowed":500000, "maxLoanAllowed":500000, "rate":0.07, "maxAmount":5000000}'
 ```
+
+
+## Pruebas unitarias
+
+Se realiza varias pruebas unitarias con las funciones más importantes con el fin de validar el correcto funcionamiento de la aplicación y para garantizar la cobertura de esta misma solución.
+
+
+## Nota desarrollador
+
+Se realiza el 99% de la aplicación siguiendo las instrucciones del challenge, el único inconveniente que se tuvo fué aplicar la formula para determinar el valor de la cuota al crear un prestamo.
+
+Según el documento un prestamo de $1000 a 12 cuotas para un usuario PREMIUM cuyo interés es 0.05 genera un valor de cuota de 85.60, traté de generar ese mismo valor en un excel como en la aplicación y no logré tener éxito en esta formula.

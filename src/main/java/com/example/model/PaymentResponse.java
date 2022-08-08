@@ -8,7 +8,9 @@ public class PaymentResponse {
 	
 	private double debt;
 	
-	private String message;
+	private String errorCode;
+	
+	private String errorMessage;
 
 	public PaymentResponse(Long id, Long loanId, double debt) {
 		super();
@@ -20,6 +22,12 @@ public class PaymentResponse {
 	public PaymentResponse(Long loanId) {
 		super();
 		this.loanId = loanId;
+	}
+	
+	public PaymentResponse(String errorCode, String errorMessage) {
+		super();
+		this.errorCode = errorCode;
+		this.errorMessage = errorMessage;
 	}
 
 	public Long getId() {
@@ -46,12 +54,20 @@ public class PaymentResponse {
 		this.debt = debt;
 	}
 
-	public String getMessage() {
-		return message;
+	public String getErrorCode() {
+		return errorCode;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 	
 }

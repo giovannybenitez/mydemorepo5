@@ -1,6 +1,7 @@
 package com.example.app;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -12,6 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.model.LoanRequest;
 import com.example.model.LoanResponse;
+import com.example.model.Payment;
+import com.example.model.PaymentResponse;
 import com.example.model.Target;
 import com.example.service.IBusinessService;
 import com.example.util.BusinessLogic;
@@ -48,10 +51,40 @@ class BusinessLogicTests {
 		Assert.assertEquals(lr.getInstallment(), 46.81, 2);
 	}
 	
-	
 	@Test
 	public void calculateInstallmentValue() {
-		Assert.assertEquals(businessLogic.calculateInstallmentValue(1000, 12, 0.95), 97.76, 2);
+		Assert.assertEquals(businessLogic.calculateInstallmentValue(1000, 12, 0.05), 97.76, 2);
+	}
+	
+	@Test
+	public void registerPaymentAmountZero() {
+		PaymentResponse pr = iBusinessService.registerPayment(new Payment(Long.valueOf(4), 0, new Date()));
+		Assert.assertEquals(pr.getErrorCode(),"1");
+	}
+	
+	@Test
+	public void registerPaymentLoanNotFound() {
+		PaymentResponse pr = iBusinessService.registerPayment(new Payment(Long.valueOf(4000), 1000, new Date()));
+		Assert.assertEquals(pr.getErrorCode(),"2");
+	}
+	
+	@Test
+	public void registerPaymentLoanPaid() {
+		PaymentResponse pr = iBusinessService.registerPayment(new Payment(Long.valueOf(1), 1000, new Date()));
+		Assert.assertEquals(pr.getErrorCode(),"3");
+	}
+	
+	@Test
+	public void registerPaymentHigherAmount() {
+		PaymentResponse pr = iBusinessService.registerPayment(new Payment(Long.valueOf(27), 10000, new Date()));
+		Assert.assertEquals(pr.getErrorCode(),"4");
+	}
+	
+	@Test
+	public void registerPayment() {
+		PaymentResponse pr = iBusinessService.registerPayment(new Payment(Long.valueOf(27), 7000, new Date()));
+		Assert.assertEquals(pr.getDebt(),0.0, 1);
+		Assert.assertNotNull(pr.getLoanId());
 	}
 	
 	@Test

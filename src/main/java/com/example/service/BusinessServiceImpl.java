@@ -170,49 +170,54 @@ public class BusinessServiceImpl implements IBusinessService{
 		PaymentResponse paymentResponse = new PaymentResponse(payment.getLoanId());
 		try {
 			
+			//Manejo de escenario #1 El usuario ingresa 0
 			if(payment.getAmount() == 0) {
 				log.info("Monto no permitido. {}, {}", payment.getAmount(), new Date());
-				paymentResponse.setMessage("Monto no permitido. Valor cero");
-				
-			}else {
-				
-				Loan loan = iLoanRepository.findById(payment.getLoanId()).orElseThrow(() -> new Exception());
-				
-				List<Payment> payments = iPaymentRepository.findByLoan(loan.getLoanId());
-				
-				double debt = businessLogic.getLoanDebt(loan, payments);
-				
-				if(debt == 0 || loan.getStatus().equals("CLOSED")) {
-					log.info("El prestamo con el id {} se encuentra pagado en su totalidad. {} ",loan.getLoanId(), new Date());
-					paymentResponse.setMessage("Prestamo en estado cerrado o cancelado totalmente.");
-					
-				}else {
-					if(payment.getAmount() > debt) {
-						log.info("Monto a pagar {} no puede ser superior a la deuda. {}, {}", payment.getAmount(), debt, new Date());
-						paymentResponse.setMessage("Monto no permitido. supera el valor de la deuda");
-						
-					}else {
-						payment.setDate(new Date());
-						payment = iPaymentRepository.save(payment);
-						
-						double debtAfterPayment = debt - payment.getAmount();
-						
-						if(debtAfterPayment == 0) {
-							loan.setStatus("CLOSED");
-							iLoanRepository.save(loan);
-						}
-						
-						paymentResponse.setId(payment.getPaymentId());
-						paymentResponse.setLoanId(payment.getLoanId());
-						paymentResponse.setDebt(debtAfterPayment);
-						paymentResponse.setMessage("Pago realizado exitasamente.");
-						
-						log.info("Pago realizado correctamente Id: {} Valor: {} Prestamo id: {} Fecha: {}",
-								payment.getPaymentId(), payment.getAmount(), payment.getLoanId(), new Date() );
-					}
-				}
+				return new PaymentResponse("1", "Monto no permitido. Valor cero");
 			}
 			
+			Loan loan;
+			//Manejo de escenario #2 El prestamo no existe
+			try {
+				loan = iLoanRepository.findById(payment.getLoanId()).orElseThrow(() -> new Exception());
+			} catch (Exception e) {
+				log.error("Loan no found", e);
+				return new PaymentResponse("2", "Prestamo no existe " + payment.getLoanId());
+			}
+			
+			List<Payment> payments = iPaymentRepository.findByLoan(loan.getLoanId());
+			
+			double debt = businessLogic.getLoanDebt(loan, payments);
+			
+			//Manejo de escenario #3 Prestamo se  encuentra saldado
+			if(debt == 0 || loan.getStatus().equals("CLOSED")) {
+				log.info("El prestamo con el id {} se encuentra pagado en su totalidad. {} ",loan.getLoanId(), new Date());
+				return new PaymentResponse("3", "Prestamo en estado cerrado o pagado en su totalidad.");
+			}
+			
+			//Manejo de escenario #4 El usuario ingresa un monto superior a la deuda actual
+			if(payment.getAmount() > debt) {
+				log.info("Monto a pagar {} no puede ser superior a la deuda. {}, {}", payment.getAmount(), debt, new Date());
+				return new PaymentResponse("4", "Monto no permitido. supera el valor de la deuda");
+			}
+			
+			payment.setDate(new Date());
+			payment = iPaymentRepository.save(payment);
+			
+			double debtAfterPayment = debt - payment.getAmount();
+			
+			//Si la deuda es cero ce cambia el estado del prestamo a cerrado
+			if(debtAfterPayment == 0) {
+				loan.setStatus("CLOSED");
+				iLoanRepository.save(loan);
+			}
+			
+			paymentResponse.setId(payment.getPaymentId());
+			paymentResponse.setLoanId(payment.getLoanId());
+			paymentResponse.setDebt(debtAfterPayment);
+			
+			log.info("Pago realizado correctamente Id: {} Valor: {} Prestamo id: {} Fecha: {}",
+					payment.getPaymentId(), payment.getAmount(), payment.getLoanId(), new Date() );
 			
 		} catch (Exception e) {
 			e.printStackTrace();
