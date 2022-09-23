@@ -96,8 +96,6 @@ curl -X PUT http://localhost:8080/change-target/3/PREMIUM -H "Accept: applicatio
 
 Se realiza varias pruebas unitarias con las funciones más importantes con el fin de validar el correcto funcionamiento de la aplicación y para garantizar la cobertura de esta misma solución.
 
-##Revisar
-
 
 ## Nota desarrollador
 
